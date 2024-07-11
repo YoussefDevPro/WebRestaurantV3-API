@@ -1,0 +1,232 @@
+{% load static %}
+
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Restaurant</title>
+    <link rel="icon" type="image/png" sizes="16x16" href=" {% static 'main/logo.png' %} ">
+    <link rel="icon" type="image/png" sizes="32x32" href=" {% static 'main/logo.png' %} ">
+    <link rel="apple-touch-icon" sizes="180x180" href=" {% static 'main/logo.png' %} ">
+    <link rel="icon" type="image/x-icon" href=" {% static 'main/logo.png' %} ">
+    <link rel="stylesheet" href=" {% static 'main/index.css' %} " />
+  </head>
+  <body>
+    <div class="background-image">
+      <img id="logo" src=" {% static 'main/logo.png' %} " alt="Logo" onclick="window.location.href='index.html'"/>
+      <h2 id="title">Bienvenue dans le restaurant</h2>
+      <div class="menu-button-container">
+        <img src="https://cdn.icon-icons.com/icons2/562/PNG/512/three-dots_icon-icons.com_53865.png" alt="Menu" id="menu-icon" class="menu-icon" />
+        <div id="dropdown-menu" class="dropdown-menu">
+          <a href="{% url 'menu' %}">Menu</a>
+          <a href="{% url 'order' %}">Commander</a>
+          <a href="{% url 'reserve' %}">Réserver</a>
+        </div>
+      </div>
+    </div>
+
+    <div style="height: 120px"></div>
+
+    <div class="content">
+      <div class="restaurant-info">
+        <img src="https://nolinskiparis.com/wp-content/uploads/2022/06/restaurant-nolinski-paris-5-etoiles-luxe-12-guillaume-de-laubier.jpg" alt="Restaurant 1" class="info-image right" />
+        <div class="info-text left">
+          <h3>À propos de notre restaurant</h3>
+          <p>
+            Bienvenue dans notre restaurant, un lieu où la passion pour la
+            gastronomie rencontre une ambiance conviviale. Notre établissement
+            offre une expérience culinaire unique avec des plats préparés à
+            partir des ingrédients les plus frais et de la plus haute qualité.
+          </p>
+          <p>
+            Suivez-nous sur <a href="#">Facebook</a>, <a href="#">Instagram</a>,
+            et <a href="#">Twitter</a> pour les dernières nouvelles et offres
+            spéciales.
+          </p>
+          <div class="button-container">
+            <button onclick="window.location.href='{% url 'reserve' %}'">
+              Réserver une table
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="restaurant-info">
+        <img
+          src="https://www.lesplanchesduchef.fr/img/cms/Ref/Carte-menu-restaurant/Carte-menu-restaurant---Val-dIs%C3%A8re-Caf%C3%A9.jpg"
+          alt="Restaurant  2"
+          class="info-image left"
+        />
+        <div class="info-text right">
+          <h3>Notre Menu</h3>
+          <p>
+            Découvrez notre menu varié, offrant une sélection de plats
+            traditionnels et modernes qui satisferont tous les palais. Que vous
+            soyez amateur de viande, végétarien, ou à la recherche de plats sans
+            gluten, nous avons quelque chose pour vous.
+          </p>
+          <div class="button-container">
+            <button onclick="window.location.href='{% url 'menu' %}'">Voir le menu</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="restaurant-info">
+        <img
+          src="https://metiers-hotel-resto.fr/wp-content/uploads/2023/05/iStock-1287152859.jpg"
+          alt="Restaurant  3"
+          class="info-image right"
+        />
+        <div class="info-text left">
+          <h3>Services de Commande en Ligne</h3>
+          <p>
+            Commandez vos plats préférés en ligne et profitez d'une livraison
+            rapide directement à votre porte. Notre plateforme en ligne est
+            facile à utiliser et sécurisée, vous permettant de passer votre
+            commande en quelques clics.
+          </p>
+          <div class="button-container">
+            <button onclick="window.location.href='{% url 'order' %}'">
+              Commander maintenant
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="footer-section" id="contact">
+        <h3>Contactez-nous</h3>
+        <p>Adresse: 123 Rue de la Gastronomie, Paris, France</p>
+        <p>Téléphone: +33 1 23 45 67 89</p>
+        <p>Email: contact@restaurant.fr</p>
+      </div>
+      <div class="footer-section" id="hours">
+        <h3>Heures d'ouverture</h3>
+        <p>Lundi - Vendredi: 12:00 - 15:00, 19:00 - 23:00</p>
+        <p>Samedi: 12:00 - 23:00</p>
+        <p>Dimanche: 12:00 - 22:00</p>
+      </div>
+      <div class="footer-section" id="reservation">
+        <h3>Réservation</h3>
+        <form method="post" class="mt4">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Réserver</button>
+        </form>
+    </div>
+
+      <div class="footer-section" id="map">
+        <h3>Nous trouver</h3>
+        <div id="map-container">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2624.990034809888!2d2.292292415674072!3d48.85884407928717!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66ff9d9b1a1b1%3A0x4c4c5f9b2db1dba1!2sEiffel%20Tower!5e0!3m2!1sen!2sfr!4v1604923044874!5m2!1sen!2sfr" width="600" height="450" allowfullscreen="" aria-hidden="false" title="Localisation"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.onreadystatechange = function () {
+          if (document.readyState === "complete") {
+            // Fonction pour vérifier si toutes les images sont chargées
+            function imagesLoaded() {
+              return new Promise((resolve) => {
+                const images = document.querySelectorAll("img");
+                let loadedCount = 0;
+                images.forEach((img) => {
+                  if (img.complete) {
+                    loadedCount++;
+                  } else {
+                    img.onload = () => {
+                      loadedCount++;
+                      if (loadedCount === images.length) {
+                        resolve();
+                      }
+                    };
+                  }
+                });
+                if (loadedCount === images.length) {
+                  resolve();
+                }
+              });
+            }
+      
+            // Afficher le contenu une fois que toutes les images sont chargées
+            imagesLoaded().then(() => {
+              document.getElementById("content").style.display = "block";
+            });
+          }
+        };
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const title = document.getElementById("title");
+        const logo = document.getElementById("logo");
+        const backgroundImage = document.querySelector(".background-image");
+        const menuIcon = document.getElementById("menu-icon");
+        const dropdownMenu = document.getElementById("dropdown-menu");
+
+        backgroundImage.style.setProperty(
+          "--background-overlay-color",
+          "rgba(0, 0, 0, 0.5)"
+        );
+
+        setTimeout(() => {
+          logo.classList.add("scrolled");
+          title.classList.add("scrolled");
+          backgroundImage.style.setProperty(
+            "--background-overlay-color",
+            "rgba(0, 0, 0, 0.8)"
+          );
+          backgroundImage.style.height = "100px";
+          title.textContent = "Le Restaurant";
+        }, 1);
+
+        menuIcon.addEventListener("click", (event) => {
+          dropdownMenu.style.display =
+            dropdownMenu.style.display === "block" ? "none" : "block";
+          event.stopPropagation(); // Prevent the window click listener from closing the menu immediately
+        });
+
+        window.addEventListener("click", (event) => {
+          if (
+            event.target !== menuIcon &&
+            !dropdownMenu.contains(event.target)
+          ) {
+            dropdownMenu.style.display = "none";
+          }
+        });
+      });
+    </script>
+
+    <style>
+        .background-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: url("{% static 'main/top_image.jpg' %}")
+                no-repeat center center;
+            background-size: cover;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            }
+
+            .background-image::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--background-overlay-color, transparent);
+            z-index: -1;
+            }
+    </style>
+  </body>
+</html>

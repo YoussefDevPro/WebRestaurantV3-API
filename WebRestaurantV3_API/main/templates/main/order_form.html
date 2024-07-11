@@ -1,0 +1,283 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Commander</title>
+    <link rel="icon" type="image/png" sizes="16x16" href=" {% static 'main/logo.png' %} ">
+    <link rel="icon" type="image/png" sizes="32x32" href=" {% static 'main/logo.png' %} ">
+    <link rel="apple-touch-icon" sizes="180x180" href=" {% static 'main/logo.png' %} ">
+    <link rel="icon" type="image/x-icon" href=" {% static 'main/logo.png' %} ">
+    <link rel="stylesheet" href=" {% static 'main/index.css' %} " />
+  </head>
+  <body>
+    <div class="background-image">
+      <img id="logo" src=" {% static 'main/logo.png' %} " alt="Logo" onclick="window.location.href='index.html'"/>
+      <h2 id="title">Bienvenue dans le restaurant</h2>
+      <div class="menu-button-container">
+        <img src="https://cdn.icon-icons.com/icons2/562/PNG/512/three-dots_icon-icons.com_53865.png" alt="Menu" id="menu-icon" class="menu-icon" />
+        <div id="dropdown-menu" class="dropdown-menu">
+          <a href="{% url 'index' %}">Page d'acceuil</a>
+          <a href="{% url 'menu' %}">Menu</a>
+          <a href="{% url 'reserve' %}">Réserver</a>
+        </div>
+      </div>
+    </div>
+
+    <div style="height: 100px"></div>
+    
+    <div class="burger-menu">
+      <a href="{% url 'index' %}" class="return-button">
+        <img src="https://cdn-icons-png.flaticon.com/512/2223/2223615.png" alt="Retour au Menu" />
+      </a>
+    </div>
+    
+    <h1>Votre commande</h1>
+    <form method="post" class="order">
+      {% csrf_token %}
+        <div>
+            <label for="id_name" class="order">Name:</label>
+            <input type="text" name="name" id="id_name" class="order" maxlength="100" required>
+        </div>
+        <div style="height: 10px;"></div>
+        <div>
+            <label for="id_phone" class="order">Phone:</label>
+            <input type="text" name="phone" id="id_phone" class="order" maxlength="20" required>
+        </div>
+        <div style="height: 10px;"></div>
+        <div>
+            <label for="id_email" class="order">Email:</label>
+            <input type="email" name="email" id="id_email" class="order" required>
+        </div>
+        <div style="height: 10px;"></div>
+        <div>
+            <label for="id_address" class="order">Address:</label>
+            <input type="text" name="address" id="id_address" class="order" maxlength="200" required>
+        </div>
+
+        <input type="hidden" name="ordered_products" id="id_ordered_products">
+        <input type="hidden" name="order_total" id="id_order_total">
+
+        <div class="product-list">
+          <h2>Burgers</h2>
+              {% for burger in burgers %}
+                  <div class="product-item" data-name="{{ burger.nom }}" data-price="{{ burger.prix }}">
+                      {{ burger.nom }} : {{ burger.prix }}DH
+                  </div>
+              {% endfor %}
+          <h2>Desserts</h2>
+              {% for dessert in desserts %}
+                  <div class="product-item" data-name="{{ dessert.nom }}" data-price="{{ dessert.prix }}">
+                      {{ dessert.nom }} : {{ dessert.prix }}DH
+                  </div>
+              {% endfor %}
+          <h2>Pizzas</h2>
+              {% for pizza in pizzas %}
+                  <div class="product-item" data-name="{{ pizza.nom }}" data-price="{{ pizza.prix }}">
+                  {{ pizza.nom }} : €{{ pizza.prix }}DH
+              </div>
+              {% endfor %}
+          <h2>Plats</h2>
+              {% for plat in plats %}
+                  <div class="product-item" data-name="{{ plat.nom }}" data-price="{{ plat.prix }}">
+                  {{ plat.nom }} : {{ plat.prix }}DH
+              </div>
+              {% endfor %}
+          <h2>Sandwiches</h2>
+              {% for sandwich in sandwiches %}
+                  <div class="product-item" data-name="{{ sandwich.nom }}" data-price="{{ sandwich.prix }}">
+                  {{ sandwich.nom }} : {{ sandwich.prix }}DH
+              </div>
+              {% endfor %}
+          <h2>Tacos</h2>
+              {% for taco in tacos %}
+                  <div class="product-item" data-name="{{ taco.nom }}" data-price="{{ taco.prix }}">
+                  {{ taco.nom }} : {{ taco.prix }}DH
+              </div>
+              {% endfor %}
+      </div>
+
+            <h2>Order Summary</h2>
+            <div class="order-summary">
+                <ul id="order-summary-list"></ul>
+                <p>Total: <span id="order-total">0.00</span>DH</p>
+            </div>
+            <div style="text-align: center;">
+              <button type="submit" class="order">Confirmer</button>
+              <button onclick="window.location.href='{% url 'index' %}'"  class="order">Annuler</button>
+            </div>
+    </form>
+
+
+    <script>
+      document.onreadystatechange = function () {
+          if (document.readyState === "complete") {
+            // Fonction pour vérifier si toutes les images sont chargées
+            function imagesLoaded() {
+              return new Promise((resolve) => {
+                const images = document.querySelectorAll("img");
+                let loadedCount = 0;
+                images.forEach((img) => {
+                  if (img.complete) {
+                    loadedCount++;
+                  } else {
+                    img.onload = () => {
+                      loadedCount++;
+                      if (loadedCount === images.length) {
+                        resolve();
+                      }
+                    };
+                  }
+                });
+                if (loadedCount === images.length) {
+                  resolve();
+                }
+              });
+            }
+      
+            // Afficher le contenu une fois que toutes les images sont chargées
+            imagesLoaded().then(() => {
+              document.getElementById("content").style.display = "block";
+            });
+          }
+        };
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const title = document.getElementById("title");
+        const logo = document.getElementById("logo");
+        const backgroundImage = document.querySelector(".background-image");
+        const menuIcon = document.getElementById("menu-icon");
+        const dropdownMenu = document.getElementById("dropdown-menu");
+
+        backgroundImage.style.setProperty(
+          "--background-overlay-color",
+          "rgba(0, 0, 0, 0.5)"
+        );
+
+        setTimeout(() => {
+          logo.classList.add("scrolled");
+          title.classList.add("scrolled");
+          backgroundImage.style.setProperty(
+            "--background-overlay-color",
+            "rgba(0, 0, 0, 0.8)"
+          );
+          backgroundImage.style.height = "100px";
+          title.textContent = "Remplissez votre commande";
+        }, 1);
+
+        menuIcon.addEventListener("click", (event) => {
+          dropdownMenu.style.display =
+            dropdownMenu.style.display === "block" ? "none" : "block";
+          event.stopPropagation(); // Prevent the window click listener from closing the menu immediately
+        });
+
+        window.addEventListener("click", (event) => {
+          if (
+            event.target !== menuIcon &&
+            !dropdownMenu.contains(event.target)
+          ) {
+            dropdownMenu.style.display = "none";
+          }
+        });
+      });
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const productItems = document.querySelectorAll('.product-item');
+        const orderSummaryList = document.getElementById('order-summary-list');
+        const orderTotalElement = document.getElementById('order-total');
+        const orderedProductsInput = document.getElementById('id_ordered_products');
+        const orderTotalInput = document.getElementById('id_order_total');
+        let total = 0;
+        let orderedProducts = [];
+
+        productItems.forEach(item => {
+            const name = item.getAttribute('data-name');
+            const price = parseFloat(item.getAttribute('data-price'));
+            
+            // Ajouter le produit au résumé dès le chargement de la page si sélectionné
+            if (item.classList.contains('selected')) {
+                addItemToSummary(name, price);
+            }
+
+            item.addEventListener('click', () => {
+                if (item.classList.contains('selected')) {
+                    item.classList.remove('selected');
+                    removeItemFromSummary(name, price);
+                } else {
+                    item.classList.add('selected');
+                    addItemToSummary(name, price);
+                }
+            });
+        });
+
+        function addItemToSummary(name, price) {
+            const listItem = document.createElement('li');
+            listItem.textContent = `${name} : ${price.toFixed(2)}DH`;
+            listItem.setAttribute('data-name', name);
+            listItem.setAttribute('data-price', price);
+            orderSummaryList.appendChild(listItem);
+            orderedProducts.push({ name, price });
+            total += price;
+            updateTotal();
+            updateHiddenFields();
+        }
+
+        function removeItemFromSummary(name, price) {
+            const items = orderSummaryList.querySelectorAll('li');
+            items.forEach(item => {
+                if (item.getAttribute('data-name') === name) {
+                    orderSummaryList.removeChild(item);
+                }
+            });
+            orderedProducts = orderedProducts.filter(product => product.name !== name);
+            total -= price;
+            updateTotal();
+            updateHiddenFields();
+        }
+
+        function updateTotal() {
+            orderTotalElement.textContent = total.toFixed(2);
+        }
+
+        function updateHiddenFields() {
+            orderedProductsInput.value = JSON.stringify(orderedProducts);
+            orderTotalInput.value = total.toFixed(2);
+        }
+    });
+    </script>
+
+    <style>
+      .background-image {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100vh;
+          background: url("{% static 'main/top_image.jpg' %}")
+              no-repeat center center;
+          background-size: cover;
+          z-index: 10;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+          color: white;
+          }
+
+          .background-image::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: var(--background-overlay-color, transparent);
+          z-index: -1;
+          }
+    </style>
+  </body>
+</html>

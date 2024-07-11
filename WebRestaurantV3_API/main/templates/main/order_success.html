@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Votre Commande à été enregistrer</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #fff9f3;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .order-container {
+            text-align: center;
+            background-color: #f8f8f8;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px #00000060;
+            transition: all 1.2s ease;
+        }
+        .order-container:hover {
+            box-shadow: 0 16px 30px #00000045;
+            transform: translateY(-15px);
+        }
+        .order-title {
+            color: #FF7043; /* Orange */
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        .order-message {
+            font-size: 1.2em;
+            color: #FF7043; /* Orange */
+            margin-bottom: 20px;
+        }
+        .order-total {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333333; /* Gris foncé */
+            margin-bottom: 30px;
+        }
+        .order-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #8ab462; /* Vert */
+            color: #ffffff;
+            text-decoration: none;
+            box-shadow: 0px 0px 3px #8ab46257;
+            border-radius: 5px;
+            transition: all 1s ease;
+        }
+        .order-link:hover {
+            background-color: #388E3C; /* Vert plus foncé */
+            box-shadow: 0px 9px 14px 4px #317a3552;
+            transform: translateY(-8px);
+        }
+    </style>
+</head>
+<body>
+    <div class="order-container">
+        <h1 class="order-title">Votre commande est confirmée !</h1>
+        <p class="order-message">Elle vous sera livrée bientôt !</p>
+        <p class="order-total">Total : {{ totale }} DH</p>
+        <p><a class="order-link" href=" {% url 'index' %} ">Retour vers la page d'accueil</a></p>
+    </div>
+</body>
+</html>
