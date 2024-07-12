@@ -1,43 +1,51 @@
+from kivy.app import App
+from kivy.uix.button import Button
+from kivy.uix.label import Label
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.scrollview import ScrollView
+from kivy.clock import Clock
 import requests
 import json
 import time
 
-# Fonction pour afficher du texte en rouge dans la console
-def print_red(text):
-    print("\033[1;31m" + text + "\033[0m")
 
-# Fonction pour afficher du texte en vert dans la console
-def print_green(text):
-    print("\033[1;32m" + text + "\033[0m")
+class OrderViewer(App):
 
-# Fonction pour afficher du texte en orange dans la console
-def print_orange(text):
-    print("\033[1;33m" + text + "\033[0m")
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.data_loaded = False
+        self.orders = []
+        self.url = 'http://127.0.0.1:8000/API/IRVRVHNOIUNOUZHNOZIJNC/Get-All-Json-Data'
+        self.refresh_interval = 60  # Interval de rafraîchissement en secondes (60 secondes = 1 minute)
 
-# Fonction pour afficher du texte en bleu dans la console
-def print_blue(text):
-    print("\033[1;34m" + text + "\033[0m")
+    def build(self):
+        self.layout = BoxLayout(orientation='vertical')
+        self.scrollview = ScrollView()
+        self.orders_label = Label(text="Chargement des données...", size_hint=(1, None),
+                                  height=1000)  # Hauteur initiale pour activer le défilement
+        self.scrollview.add_widget(self.orders_label)
+        self.layout.add_widget(self.scrollview)
+        self.refresh_button = Button(text="Rafraîchir les données", size_hint=(1, 0.1))
+        self.refresh_button.bind(on_press=self.refresh_data)
+        self.layout.add_widget(self.refresh_button)
+        self.schedule_data_refresh()
+        return self.layout
 
-# URL de l'API
-url = 'http://127.0.0.1:8000/API/IRVRVHNOIUNOUZHNOZIJNC/Get-All-Json-Data'
+    def refresh_data(self, instance):
+        self.load_data()
 
-# Effectuer la requête GET pour récupérer les données JSON
-response = requests.get(url)
+    def load_data(self):
+        response = requests.get(self.url)
+        if response.status_code == 200:
+            self.orders = response.json().get('order', [])
+            self.update_orders_label()
+        else:
+            self.orders_label.text = f"Échec de la requête. Code de statut: {response.status_code}"
+        self.data_loaded = True
 
-# Vérifier si la requête a réussi
-if response.status_code == 200:
-    data = response.json()
-
-    # Récupérer les données des commandes
-    orders = data.get('order', [])
-
-    # Vérifier s'il y a des commandes à traiter
-    if orders:
-        print()
-        print_blue("Commandes :")
-        print("\n" + "=" * 50)
-        for order_details in orders:
-            time.sleep(0.2)
+    def update_orders_label(self):
+        orders_text = ""
+        for order_details in self.orders:
             order_id = order_details['id']
             order_name = order_details['name']
             order_phone = order_details['phone']
@@ -47,29 +55,32 @@ if response.status_code == 200:
             total_amount = order_details['total']
             ordered_products = json.loads(order_details['ordered_products'])
 
-            # Afficher la facture
-            print("\n" + "=" * 50)  # Séparateur visuel entre les factures
-            print_red(f"Facture de commande #{order_id}")
-            print(f"{'Nom du client:':<20} {order_name}")
-            print(f"{'Téléphone:':<20} {order_phone}")
-            print(f"{'Email:':<20} {order_email}")
-            print(f"{'Adresse:':<20} {order_address}")
-            print(f"{'Date de la commande:':<20} {order_date}")
-            print("\nProduits commandés:")
-            print("{:<30} {:<10}".format("\033[1;31mNom\033[0m", "\033[1;31mPrix\033[0m"))  # Titres en rouge
-            print("-" * 40)  # Séparateur
+            orders_text += f"\n{'=' * 50}"
+            orders_text += f"\nFacture de commande #{order_id}"
+            orders_text += f"\n{'Nom du client:':<20} {order_name}"
+            orders_text += f"\n{'Téléphone:':<20} {order_phone}"
+            orders_text += f"\n{'Email:':<20} {order_email}"
+            orders_text += f"\n{'Adresse:':<20} {order_address}"
+            orders_text += f"\n{'Date de la commande:':<20} {order_date}"
+            orders_text += "\n\nProduits commandés:"
+            orders_text += "\n{:<30} {:<10}".format("Nom", "Prix")
+            orders_text += "\n" + "-" * 40
 
             for product in ordered_products:
-                time.sleep(0.1)
                 product_name = product['name']
                 product_price = product['price']
-                # Affichage du produit avec prix aligné
-                print("{:<30} {:<10}".format(product_name, f"${product_price:.2f}"))
+                orders_text += f"\n{product_name:<30} ${product_price:.2f}"
 
-            # Afficher le total à payer en orange
-            print_orange("\nTotal à payer: ${:.2f}".format(total_amount))
-            print("\n" + "=" * 50)  # Séparateur visuel entre les factures
-    else:
-        print_blue("Aucune commande trouvée.")
-else:
-    print_red(f"Échec de la requête. Code de statut: {response.status_code}")
+            orders_text += f"\n\nTotal à payer: ${total_amount:.2f}"
+
+        self.orders_label.text = orders_text
+        # Mettre à jour la hauteur du Label en fonction du contenu
+        self.orders_label.height = self.orders_label.texture_size[
+                                       1] + 20  # Ajoutez une marge supplémentaire pour le padding
+
+    def schedule_data_refresh(self):
+        Clock.schedule_interval(lambda dt: self.load_data(), self.refresh_interval)
+
+
+if __name__ == '__main__':
+    OrderViewer().run()
