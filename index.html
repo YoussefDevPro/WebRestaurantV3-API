@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page de Commandes et Réservations</title>
+    <style>
+        /* Styles CSS facultatifs pour la mise en forme */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 20px;
+        }
+        .order, .reservation {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #fff;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Importation de jQuery pour AJAX -->
+    <script src="script.js" defer></script> <!-- Importation de votre script JavaScript -->
+</head>
+<body>
+    <h1>Liste des Commandes et Réservations</h1>
+
+    <div id="orders-container">
+        <!-- Contenu des commandes sera rempli par JavaScript -->
+    </div>
+
+    <div id="reservations-container">
+        <!-- Contenu des réservations sera rempli par JavaScript -->
+    </div>
+</body>
+</html>
