@@ -47,7 +47,7 @@ if response.status_code == 200:
             total_amount = order_details['total']
             ordered_products = json.loads(order_details['ordered_products'])
 
-            # Afficher la facture
+            # Afficher la facture de la commande
             print("\n" + "=" * 50)  # Séparateur visuel entre les factures
             print_red(f"Facture de commande #{order_id}")
             print(f"{'Nom du client:':<20} {order_name}")
@@ -71,5 +71,36 @@ if response.status_code == 200:
             print("\n" + "=" * 50)  # Séparateur visuel entre les factures
     else:
         print_blue("Aucune commande trouvée.")
+
+    # Récupérer les données des réservations
+    reservations = data.get('reservation', [])
+
+    # Vérifier s'il y a des réservations à traiter
+    if reservations:
+        print()
+        print_green("Réservations :")
+        print("\n" + "=" * 50)
+        for reservation_details in reservations:
+            time.sleep(0.2)
+            reservation_id = reservation_details['id']
+            reservation_name = reservation_details['name']
+            reservation_phone = reservation_details['phone']
+            reservation_email = reservation_details['email']
+            reservation_date = reservation_details['date']
+            reservation_time = reservation_details['time']
+            reservation_guests = reservation_details['guests']
+
+            # Afficher les détails de la réservation
+            print("\n" + "=" * 50)  # Séparateur visuel entre les réservations
+            print_green(f"Réservation #{reservation_id}")
+            print(f"{'Nom:':<20} {reservation_name}")
+            print(f"{'Téléphone:':<20} {reservation_phone}")
+            print(f"{'Email:':<20} {reservation_email}")
+            print(f"{'Date:':<20} {reservation_date}")
+            print(f"{'Heure:':<20} {reservation_time}")
+            print(f"{'Nombre de convives:':<20} {reservation_guests}")
+            print("\n" + "=" * 50)  # Séparateur visuel entre les réservations
+    else:
+        print_green("Aucune réservation trouvée.")
 else:
     print_red(f"Échec de la requête. Code de statut: {response.status_code}")
