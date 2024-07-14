@@ -1,73 +1,43 @@
-from kivy.app import App
-from kivy.metrics import dp
-from kivy.uix.button import Button
-from kivy.uix.label import Label
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.scrollview import ScrollView
-from kivy.uix.stacklayout import StackLayout
-from kivy.uix.gridlayout import GridLayout
-from kivy.clock import Clock
-from kivy.graphics import Color, Rectangle
-from kivy.core.window import Window
 import requests
 import json
+import time
 
+# Fonction pour afficher du texte en rouge dans la console
+def print_red(text):
+    print("\033[1;31m" + text + "\033[0m")
 
-class OrderViewer(App):
+# Fonction pour afficher du texte en vert dans la console
+def print_green(text):
+    print("\033[1;32m" + text + "\033[0m")
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.orders = []
-        self.url = 'http://127.0.0.1:8000/API/IRVRVHNOIUNOUZHNOZIJNC/Get-All-Json-Data'
-        self.refresh_interval = 60  # Interval de rafraîchissement en secondes
+# Fonction pour afficher du texte en orange dans la console
+def print_orange(text):
+    print("\033[1;33m" + text + "\033[0m")
 
-    def build(self):
-        self.layout = BoxLayout(orientation='vertical')
+# Fonction pour afficher du texte en bleu dans la console
+def print_blue(text):
+    print("\033[1;34m" + text + "\033[0m")
 
-        # ScrollView with adjusted size
-        self.scrollview = ScrollView(size_hint=(1, None), size=(Window.width, Window.height))
+# URL de l'API
+url = 'http://127.0.0.1:8000/API/IRVRVHNOIUNOUZHNOZIJNC/Get-All-Json-Data'
 
-        self.orders_stack = StackLayout(size_hint=(1, None), spacing=10, padding=10)
-        self.scrollview.add_widget(self.orders_stack)
+# Effectuer la requête GET pour récupérer les données JSON
+response = requests.get(url)
 
-        self.layout.add_widget(self.scrollview)
+# Vérifier si la requête a réussi
+if response.status_code == 200:
+    data = response.json()
 
-        # Refresh button with adjusted size
-        self.refresh_button = Button(text="Rafraîchir les données", size_hint=(1, None), height=dp(20))
-        self.refresh_button.bind(on_press=self.refresh_data)
-        self.layout.add_widget(self.refresh_button)
+    # Récupérer les données des commandes
+    orders = data.get('order', [])
 
-        self.load_data()  # Charger les données au démarrage
-        self.schedule_data_refresh()
-
-        return self.layout
-
-    def refresh_data(self, instance):
-        self.load_data()
-
-    def load_data(self):
-        try:
-            response = requests.get(self.url)
-            response.raise_for_status()  # Lève une exception pour les codes de statut d'erreur
-            self.orders = response.json().get('order', [])
-            self.update_orders_stack()
-        except requests.RequestException as e:
-            self.orders_stack.clear_widgets()
-            self.orders_stack.add_widget(Label(text=f"Échec de la requête : {e}", size_hint=(1, None), height=40))
-
-    def update_orders_stack(self):
-        self.orders_stack.clear_widgets()
-        for order_details in self.orders:
-            order_layout = BoxLayout(orientation='vertical', size_hint=(None, None), size=(600, Window.height * 0.6),
-                                     padding=15, spacing=10)
-            order_layout.bind(minimum_height=order_layout.setter('height'))
-
-            with order_layout.canvas.before:
-                Color(0.9, 0.9, 0.9, 1)
-                order_rect = Rectangle(size=order_layout.size, pos=order_layout.pos)
-                order_layout.bind(size=self._update_rect(order_rect, order_layout),
-                                  pos=self._update_rect(order_rect, order_layout))
-
+    # Vérifier s'il y a des commandes à traiter
+    if orders:
+        print()
+        print_blue("Commandes :")
+        print("\n" + "=" * 50)
+        for order_details in orders:
+            time.sleep(0.2)
             order_id = order_details['id']
             order_name = order_details['name']
             order_phone = order_details['phone']
@@ -77,58 +47,29 @@ class OrderViewer(App):
             total_amount = order_details['total']
             ordered_products = json.loads(order_details['ordered_products'])
 
-            order_layout.add_widget(self.create_order_label(f"[b]Facture de commande #{order_id}[/b]", bold=True))
-            order_layout.add_widget(self.create_order_label(f"Nom du client:\n{order_name}"))
-            order_layout.add_widget(self.create_order_label(f"Téléphone:\n{order_phone}"))
-            order_layout.add_widget(self.create_order_label(f"Email:\n{order_email}"))
-            order_layout.add_widget(self.create_order_label(f"Adresse:\n{order_address}"))
-            order_layout.add_widget(self.create_order_label(f"Date de la commande:\n{order_date}"))
-
-            order_layout.add_widget(self.create_order_label("\nProduits commandés:", bold=True))
-            products_grid = GridLayout(cols=2, size_hint=(1, None), spacing=5)
-            products_grid.bind(minimum_height=products_grid.setter('height'))
-            products_grid.add_widget(self.create_order_label("Nom", bold=True))
-            products_grid.add_widget(self.create_order_label("Prix", bold=True, align_right=True))
+            # Afficher la facture
+            print("\n" + "=" * 50)  # Séparateur visuel entre les factures
+            print_red(f"Facture de commande #{order_id}")
+            print(f"{'Nom du client:':<20} {order_name}")
+            print(f"{'Téléphone:':<20} {order_phone}")
+            print(f"{'Email:':<20} {order_email}")
+            print(f"{'Adresse:':<20} {order_address}")
+            print(f"{'Date de la commande:':<20} {order_date}")
+            print("\nProduits commandés:")
+            print("{:<30} {:<10}".format("\033[1;31mNom\033[0m", "\033[1;31mPrix\033[0m"))  # Titres en rouge
+            print("-" * 40)  # Séparateur
 
             for product in ordered_products:
+                time.sleep(0.1)
                 product_name = product['name']
                 product_price = product['price']
-                products_grid.add_widget(self.create_order_label(product_name))
-                products_grid.add_widget(self.create_order_label(f"${product_price:.2f}", align_right=True))
+                # Affichage du produit avec prix aligné
+                print("{:<30} {:<10}".format(product_name, f"${product_price:.2f}"))
 
-            order_layout.add_widget(products_grid)
-            order_layout.add_widget(self.create_order_label(f"\nTotal à payer: ${total_amount:.2f}", bold=True))
-
-            self.orders_stack.add_widget(order_layout)
-
-        # Update the height of the orders_stack and scrollview based on content
-        self.orders_stack.height = sum(child.height + 10 for child in self.orders_stack.children)
-        self.scrollview.height = min(self.orders_stack.height, Window.height - 50)
-
-    def create_order_label(self, text, bold=False, align_right=False):
-        halign = 'right' if align_right else 'left'
-        return Label(
-            text=text,
-            size_hint=(1, None),
-            height=40,
-            markup=True,
-            color=(0, 0, 0, 1),
-            bold=bold,
-            halign=halign,
-            valign='middle',
-            text_size=(None, None)  # Important for multiline
-        )
-
-    def _update_rect(self, rect, layout):
-        def update(instance, value):
-            rect.size = layout.size
-            rect.pos = layout.pos
-
-        return update
-
-    def schedule_data_refresh(self):
-        Clock.schedule_interval(lambda dt: self.load_data(), self.refresh_interval)
-
-
-if __name__ == '__main__':
-    OrderViewer().run()
+            # Afficher le total à payer en orange
+            print_orange("\nTotal à payer: ${:.2f}".format(total_amount))
+            print("\n" + "=" * 50)  # Séparateur visuel entre les factures
+    else:
+        print_blue("Aucune commande trouvée.")
+else:
+    print_red(f"Échec de la requête. Code de statut: {response.status_code}")
