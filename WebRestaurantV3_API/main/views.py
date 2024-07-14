@@ -5,6 +5,7 @@ from .forms import *
 from .forms import *
 import json
 from django.core import serializers
+from django.views.decorators.csrf import csrf_exempt
 
 
 def index(request):
@@ -143,6 +144,7 @@ def reserve_view(request):
     return render(request, 'main/reserve.html', {'form': form})
 
 
+@csrf_exempt
 def api_get_all_json_data(request):
     items_order = Order.objects.all()
     items_reservation = Reservation.objects.all()
