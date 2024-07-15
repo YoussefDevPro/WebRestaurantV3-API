@@ -2,17 +2,21 @@ import requests
 import json
 import time
 
+
 # Fonction pour afficher du texte en rouge dans la console
 def print_red(text):
     print("\033[1;31m" + text + "\033[0m")
+
 
 # Fonction pour afficher du texte en vert dans la console
 def print_green(text):
     print("\033[1;32m" + text + "\033[0m")
 
+
 # Fonction pour afficher du texte en orange dans la console
 def print_orange(text):
     print("\033[1;33m" + text + "\033[0m")
+
 
 # Fonction pour afficher du texte en bleu dans la console
 def print_blue(text):

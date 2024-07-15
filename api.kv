@@ -1,0 +1,97 @@
+MainWidget:
+
+<MainWidget>:
+    do_default_tab: False
+    TabbedPanelItem:
+        text: "Order"
+        OrderView:
+            id: order_view
+
+<OrderView>:
+    orientation: "vertical"
+    BoxLayout:
+        id: order_container
+        orientation: "vertical"
+        padding: 10
+        spacing: 10
+
+<OrderItem>:
+    orientation: "vertical"
+    padding: 10
+    spacing: 20
+    BoxLayout:
+        orientation: "horizontal"
+        spacing: 5
+        Label:
+            text: "Facture de commande"
+            size_hint_x: 0.4
+        Label:
+            text: root.numero_de_commande
+            size_hint_x: 0.6
+    BoxLayout:
+        orientation: "horizontal"
+        spacing: 5
+        Label:
+            text: "Nom du client:"
+            size_hint_x: 0.4
+        Label:
+            text: root.order_name
+            size_hint_x: 0.6
+    BoxLayout:
+        orientation: "horizontal"
+        spacing: 5
+        Label:
+            text: "Téléphone:"
+            size_hint_x: 0.4
+        Label:
+            text: root.order_phone
+            size_hint_x: 0.6
+    BoxLayout:
+        orientation: "horizontal"
+        spacing: 5
+        Label:
+            text: "Email:"
+            size_hint_x: 0.4
+        Label:
+            text: root.order_email
+            size_hint_x: 0.6
+    BoxLayout:
+        orientation: "horizontal"
+        spacing: 5
+        Label:
+            text: "Adresse:"
+            size_hint_x: 0.4
+        Label:
+            text: root.order_address
+            size_hint_x: 0.6
+    BoxLayout:
+        orientation: "horizontal"
+        spacing: 5
+        Label:
+            text: "Date de la commande:"
+            size_hint_x: 0.4
+        Label:
+            text: root.order_date
+            size_hint_x: 0.6
+    BoxLayout:
+        orientation: "vertical"
+        spacing: 5
+        Label:
+            text: "Produits commandés:"
+        BoxLayout:
+            id: products_layout
+            orientation: "vertical"
+            spacing: 5
+    BoxLayout:
+        id: order_item
+
+<OrderedProductItem>:
+    orientation: "horizontal"
+    padding: 5
+    spacing: 5
+    Label:
+        text: root.nom
+        size_hint_x: 0.7
+    Label:
+        text: root.prix
+        size_hint_x: 0.3
