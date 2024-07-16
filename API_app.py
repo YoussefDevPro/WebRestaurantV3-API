@@ -15,9 +15,6 @@ class MainWidget(TabbedPanel):
 class OrderView(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.layout = StackLayout(orientation='lr-tb', padding=10, spacing=10, size_hint_y=None)
-        self.layout.bind(minimum_height=self.layout.setter('height'))
-        self.add_widget(self.layout)
         self.load_orders()
 
     def load_orders(self):
@@ -39,7 +36,7 @@ class OrderView(BoxLayout):
                     totale = order_details['total']
                     ordered_products = json.loads(order_details['ordered_products'])
                     item = OrderItem(order_id, order_name, order_phone, order_email, order_address, order_date, ordered_products, totale)
-                    self.layout.add_widget(item)
+                    self.add_widget(item)
             else:
                 print("No orders found")  # Debugging line
         except Exception as e:
@@ -66,7 +63,6 @@ class OrderItem(BoxLayout):
 
     def __init__(self, numero_de_commande, order_name, order_phone, order_email, order_address, order_date, ordered_products, totale, **kwargs):
         super().__init__(**kwargs)
-        self.orientation = 'vertical'
         self.padding = 10
         self.spacing = 20
         self.numero_de_commande = "#" + str(numero_de_commande)
@@ -87,12 +83,11 @@ class OrderItem(BoxLayout):
         self.add_widget(self.create_label_pair("Date de la commande:", self.order_date))
 
         self.add_widget(self.create_label("Produits commandés:"))
-        box = BoxLayout(spacing=5)
         for product in ordered_products:
             product_name = product['name']
             product_price = product['price']
             product_widget = OrderedProductItem(product_name, product_price)
-            box.add_widget(product_widget)
+            self.add_widget(product_widget)
 
         product_widget = OrderedProductItem("Totale payé", totale)
         self.add_widget(product_widget)
@@ -111,9 +106,6 @@ class OrderItem(BoxLayout):
 class ReservationView(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.layout = StackLayout(orientation='lr-tb', padding=10, spacing=10, size_hint_y=None)
-        self.layout.bind(minimum_height=self.layout.setter('height'))
-        self.add_widget(self.layout)
         self.load_reservations()
 
     def load_reservations(self):
@@ -134,7 +126,7 @@ class ReservationView(BoxLayout):
                     reservation_time = reservation_details['time']
                     reservation_guests = reservation_details['guests']
                     item = ReservationItem(reservation_id, reservation_name, reservation_phone, reservation_email, reservation_date, reservation_time, reservation_guests)
-                    self.layout.add_widget(item)
+                    self.add_widget(item)
             else:
                 print("No reservations found")  # Debugging line
         except Exception as e:
