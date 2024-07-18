@@ -32,7 +32,6 @@ class CustomBoxLayout(BoxLayout):
         # Update the position and size of the rectangle to match the instance's position and size
         self.rect.pos = instance.pos
         self.rect.size = instance.size
-        print(f"Updating rectangle position: {self.rect.pos}, size: {self.rect.size}")  # Print debug message
 
 
 
